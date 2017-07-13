@@ -1,0 +1,22 @@
+{
+    "name": "gleb-svitelskiy/search-results-aggregator",
+    "description": "Use keyword based search on multiple search engines at once and aggregate all the results to one result set.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gleb Svitelskiy",
+            "email": "gleb.svitelskiy@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "facebook/webdriver": "^1.4",
+        "symfony/dom-crawler": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "SearchResultsAggregator\\": "src/"
+        }
+    }
+}

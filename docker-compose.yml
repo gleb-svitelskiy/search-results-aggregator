@@ -1,0 +1,11 @@
+version: "3"
+services:
+  phantomjs:
+    image: wernight/phantomjs:2
+    entrypoint: ["phantomjs", "--webdriver=8910", "--ignore-ssl-errors=true", "--ssl-protocol=any"]
+  php:
+    build: ./docker/php
+    volumes:
+      - ./:/var/www/html
+    links:
+      - phantomjs
