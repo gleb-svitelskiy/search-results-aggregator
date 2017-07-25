@@ -4,7 +4,7 @@ namespace SearchResultsAggregator\DataProviders;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class Yahoo extends DataProviderAbstract
+class Yahoo extends DataProviderAbstract implements DataProviderInterface
 {
     /**
      * @const

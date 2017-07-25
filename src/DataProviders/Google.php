@@ -4,7 +4,7 @@ namespace SearchResultsAggregator\DataProviders;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class Google extends DataProviderAbstract
+class Google extends DataProviderAbstract implements DataProviderInterface
 {
     /**
      * @const
