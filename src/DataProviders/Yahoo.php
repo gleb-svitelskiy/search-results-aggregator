@@ -3,6 +3,7 @@
 namespace SearchResultsAggregator\DataProviders;
 
 use Symfony\Component\DomCrawler\Crawler;
+use SearchResultsAggregator\Results\{ResultCollection, Result};
 
 class Yahoo extends DataProviderAbstract implements DataProviderInterface
 {
@@ -31,22 +32,18 @@ class Yahoo extends DataProviderAbstract implements DataProviderInterface
         return self::WAIT_FOR_ELEMENT_NAME;
     }
 
-    protected function getData(string $html): array
+    protected function getResult(string $html): ResultCollection
     {
+        $collection = new ResultCollection();
         $crawler = new Crawler($html);
-        // @todo need return object, not array
         $data = $crawler->filterXPath(
             self::DATA_XPATH
         )->each(
-            function ($node) {
-                return [
-                    'Title' => $node->text(),
-                    'Url'   => $node->attr('href'),
-                    'Source' => 'Yahoo',
-                ];
+            function ($node) use ($collection) {
+                $collection->append(new Result($node->text(), $node->attr('href'), ['Yahoo']));
             }
         );
 
-        return $data;
+        return $collection;
     }
 }

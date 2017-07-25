@@ -3,12 +3,13 @@
 namespace SearchResultsAggregator\DataProviders;
 
 use SearchResultsAggregator\WebDrivers\WebDriverInterface;
+use SearchResultsAggregator\Results\ResultCollection;
 
 abstract class DataProviderAbstract
 {
     abstract protected function getEndpointUrl(): string;
     abstract protected function getWaitForElementName(): string;
-    abstract protected function getData(string $html): array;
+    abstract protected function getResult(string $html): ResultCollection;
 
     /**
      * @var WebDriverInterface
@@ -25,7 +26,7 @@ abstract class DataProviderAbstract
         $this->webDriver = $webDriver;
     }
 
-    public function search(string $searchRequest): array
+    public function search(string $searchRequest): ResultCollection
     {
         $searchRequest = trim($searchRequest);
         if (empty($searchRequest)) {
@@ -37,6 +38,6 @@ abstract class DataProviderAbstract
             $this->getWaitForElementName()
         );
 
-        return $this->getData($html);
+        return $this->getResult($html);
     }
 }

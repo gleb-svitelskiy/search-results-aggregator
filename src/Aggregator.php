@@ -4,6 +4,7 @@ namespace SearchResultsAggregator;
 
 use SearchResultsAggregator\WebDrivers\WebDriverInterface;
 use SearchResultsAggregator\DataProviders\DataProviderInterface;
+use SearchResultsAggregator\Results\{ResultCollection, Result};
 
 class Aggregator
 {
@@ -17,24 +18,29 @@ class Aggregator
      */
     protected $dataProviders = [];
 
-    protected function aggregateResults(array $results): array
+    protected function aggregateResults(array $results): ResultCollection
     {
         $aggregatedResults = [];
         foreach ($results as $result) {
-            $key = "{$result['Url']}";
+            $key = $result->getUrl();
             $isDuplicateResult = isset($aggregatedResults[$key]);
             if ($isDuplicateResult) {
-                $aggregatedResults[$key]['Source'][] = $result['Source'];
+                array_push($aggregatedResults[$key]['source'], current($result->getSource()));
             } else {
                 $aggregatedResults[$key] = [
-                    'Title' => $result['Title'],
-                    'Url' => $result['Url'],
-                    'Source' => [$result['Source']],
+                    'title' => $result->getTitle(),
+                    'url' => $result->getUrl(),
+                    'source' => $result->getSource(),
                 ];
             }
         }
 
-        return array_values($aggregatedResults);
+        $collection = new ResultCollection();
+        foreach($aggregatedResults as $result) {
+            $collection->append(new Result($result['title'], $result['url'], $result['source']));
+        }
+
+        return $collection;
     }
 
     public function __construct(WebDriverInterface $webDriver)
@@ -51,12 +57,13 @@ class Aggregator
         $this->dataProviders[] = $dataProvider;
     }
 
-    public function search(string $searchRequest): array
+    public function search(string $searchRequest): ResultCollection
     {
         $results = [];
         foreach ($this->dataProviders as $dataProvider) {
-            $results = array_merge($results, $dataProvider->search($searchRequest));
+            $results[] = $dataProvider->search($searchRequest)->getArrayCopy();
         }
+        $results = call_user_func_array('array_merge', $results);
 
         return $this->aggregateResults($results);
     }

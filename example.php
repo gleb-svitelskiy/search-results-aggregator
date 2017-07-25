@@ -13,12 +13,21 @@ if (empty($searchRequestString)) {
 }
 
 $dataProvider = new Google(new PhantomjsDriver('http://phantomjs:8910'));
-print_r($dataProvider->search($searchRequestString));
+$results = $dataProvider->search($searchRequestString);
+foreach ($results as $result) {
+    $result->print();
+}
 
 $dataProvider = new Yahoo(new PhantomjsDriver('http://phantomjs:8910'));
-print_r($dataProvider->search($searchRequestString));
+$results = $dataProvider->search($searchRequestString);
+foreach ($results as $result) {
+    $result->print();
+}
 
 $aggregator = new Aggregator(new PhantomjsDriver('http://phantomjs:8910'));
 $aggregator->addDataProvider('SearchResultsAggregator\DataProviders\Google');
 $aggregator->addDataProvider('SearchResultsAggregator\DataProviders\Yahoo');
-print_r($aggregator->search($searchRequestString));
+$results = $aggregator->search($searchRequestString);
+foreach ($results as $result) {
+    $result->print();
+}
