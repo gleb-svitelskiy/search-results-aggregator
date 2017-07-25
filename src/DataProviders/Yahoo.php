@@ -4,7 +4,7 @@ namespace SearchResultsAggregator\DataProviders;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class Yahoo implements DataProviderInterface
+class Yahoo extends DataProviderAbstract
 {
     /**
      * @const
@@ -14,31 +14,26 @@ class Yahoo implements DataProviderInterface
     /**
      * @const
      */
-    protected const DATA_XPATH = '//*[@id="web"]/ol/li/div/div/h3/a';
+    protected const WAIT_FOR_ELEMENT_NAME = 'main';
 
     /**
-     * @var string search result endpoint response
+     * @const
      */
-    protected $response;
+    protected const DATA_XPATH = '//*[@id="web"]/ol/li/div/div/h3/a';
 
-    public function getUrl(string $searchRequest): string
+    protected function getEndpointUrl(): string
     {
-        return sprintf(self::SEARCH_RESULT_ENDPOINT, urlencode($searchRequest));
+        return self::SEARCH_RESULT_ENDPOINT;
     }
 
-    public function getWaitForElementName(): string
+    protected function getWaitForElementName(): string
     {
-        return 'main';
+        return self::WAIT_FOR_ELEMENT_NAME;
     }
 
-    public function setResponse(string $response): void
+    protected function getData(string $html): array
     {
-        $this->response = $response;
-    }
-
-    public function getData(): array
-    {
-        $crawler = new Crawler($this->response);
+        $crawler = new Crawler($html);
         // @todo need return object, not array
         $data = $crawler->filterXPath(
             self::DATA_XPATH

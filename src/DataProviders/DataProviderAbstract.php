@@ -1,0 +1,42 @@
+<?php
+
+namespace SearchResultsAggregator\DataProviders;
+
+use SearchResultsAggregator\WebDrivers\WebDriverInterface;
+
+abstract class DataProviderAbstract
+{
+    abstract protected function getEndpointUrl(): string;
+    abstract protected function getWaitForElementName(): string;
+    abstract protected function getData(string $html): array;
+
+    /**
+     * @var WebDriverInterface
+     */
+    protected $webDriver;
+
+    protected function getUrl(string $searchRequest): string
+    {
+        return sprintf($this->getEndpointUrl(), urlencode($searchRequest));
+    }
+
+    public function __construct(WebDriverInterface $webDriver)
+    {
+        $this->webDriver = $webDriver;
+    }
+
+    public function search(string $searchRequest): array
+    {
+        $searchRequest = trim($searchRequest);
+        if (empty($searchRequest)) {
+            throw new \BadMethodCallException('$searchRequest is empty');
+        }
+
+        $html = $this->webDriver->getPageSource(
+            $this->getUrl($searchRequest),
+            $this->getWaitForElementName()
+        );
+
+        return $this->getData($html);
+    }
+}
