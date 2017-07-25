@@ -3,7 +3,7 @@
 require __DIR__.'/vendor/autoload.php';
 
 use SearchResultsAggregator\WebDrivers\Phantomjs as PhantomjsDriver;
-use SearchResultsAggregator\DataProviders\{Google, Yahoo};
+use SearchResultsAggregator\DataProviders\{Google, Yahoo, GroupDataProvider};
 use SearchResultsAggregator\Aggregator;
 
 $searchRequestString = $argv[1] ?? '';
@@ -24,10 +24,12 @@ foreach ($results as $result) {
     $result->print();
 }
 
-$aggregator = new Aggregator(new PhantomjsDriver('http://phantomjs:8910'));
-$aggregator->addDataProvider('SearchResultsAggregator\DataProviders\Google');
-$aggregator->addDataProvider('SearchResultsAggregator\DataProviders\Yahoo');
-$results = $aggregator->search($searchRequestString);
+$groupDataProvider = new GroupDataProvider(
+    new Aggregator(),
+    new Google(new PhantomjsDriver('http://phantomjs:8910')),
+    new Yahoo(new PhantomjsDriver('http://phantomjs:8910'))
+);
+$results = $groupDataProvider->search($searchRequestString);
 foreach ($results as $result) {
     $result->print();
 }
