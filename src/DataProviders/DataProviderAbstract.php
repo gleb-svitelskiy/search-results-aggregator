@@ -5,7 +5,7 @@ namespace SearchResultsAggregator\DataProviders;
 use SearchResultsAggregator\WebDrivers\WebDriverInterface;
 use SearchResultsAggregator\Results\ResultCollection;
 
-abstract class DataProviderAbstract
+abstract class DataProviderAbstract implements DataProviderInterface
 {
     abstract protected function getEndpointUrl(): string;
     abstract protected function getWaitForElementName(): string;

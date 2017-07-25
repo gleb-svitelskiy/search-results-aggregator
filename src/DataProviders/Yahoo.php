@@ -5,7 +5,7 @@ namespace SearchResultsAggregator\DataProviders;
 use Symfony\Component\DomCrawler\Crawler;
 use SearchResultsAggregator\Results\{ResultCollection, Result};
 
-class Yahoo extends DataProviderAbstract implements DataProviderInterface
+class Yahoo extends DataProviderAbstract
 {
     /**
      * @const
@@ -34,6 +34,7 @@ class Yahoo extends DataProviderAbstract implements DataProviderInterface
 
     protected function getResult(string $html): ResultCollection
     {
+        // todo move to parser instance
         $collection = new ResultCollection();
         $crawler = new Crawler($html);
         $data = $crawler->filterXPath(
